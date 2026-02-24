@@ -12,20 +12,20 @@ public class ProdutoPerecivel extends Produto {
                             LocalDate validade) {
         super(desc, precoCusto, margemLucro);
 
-        if(validade.isAfter(LocalDate.now()))
+        if(validade.isBefore(LocalDate.now()))
             throw new IllegalArgumentException("A data de validade já está vencida.");
 
         this.dataDeValidade = validade;
     }
 
     public double valorVenda() {
-        if(dataDeValidade.isAfter(LocalDate.now()))
+        if(dataDeValidade.isBefore(LocalDate.now()))
             throw new IllegalStateException("Esse produto passou da validade e não pode estar à venda.");
 
         double valor = precoCusto * (1 + margemLucro);
 
         return 
-            dataDeValidade.isAfter(LocalDate.now().minusDays(PRAZO_DESCONTO)) ?
+            LocalDate.now().isAfter(dataDeValidade.minusDays(PRAZO_DESCONTO)) ?
             valor * (1 - DESCONTO) : 
             valor;
     }
