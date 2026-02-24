@@ -1,4 +1,5 @@
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
 public class ProdutoPerecivel extends Produto {
 
@@ -18,6 +19,7 @@ public class ProdutoPerecivel extends Produto {
         this.dataDeValidade = validade;
     }
 
+    @Override
     public double valorVenda() {
         if(dataDeValidade.isBefore(LocalDate.now()))
             throw new IllegalStateException("Esse produto passou da validade e não pode estar à venda.");
@@ -28,6 +30,16 @@ public class ProdutoPerecivel extends Produto {
             LocalDate.now().isAfter(dataDeValidade.minusDays(PRAZO_DESCONTO)) ?
             valor * (1 - DESCONTO) : 
             valor;
+    }
+
+    @Override
+    public String toString() {
+        DateTimeFormatter formatoData = DateTimeFormatter.ofPattern("dd/mm/yyyy");
+
+        StringBuilder builder = new StringBuilder(super.toString());
+        builder.append("\nVálido até " + formatoData);
+
+        return builder.toString();
     }
 
 
