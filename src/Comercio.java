@@ -1,7 +1,10 @@
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.nio.charset.Charset;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.Scanner;
 
 public class Comercio {
@@ -139,13 +142,44 @@ public class Comercio {
 	 * objetos.
 	 */
 	static void cadastrarProduto() {
-		/*
-		 * Implementar a sub-rotina de exibir o novo menu para cadastro de novo produto,
-		 * ler os dados necessários
-		 * conforme o tipo desejado, criar o objeto correspondente, salvando-o no vetor
-		 * de produtosCadastrados e
-		 * incrementando a variável de controle da quantidade de produtos.
-		 */
+		System.out.println("==== CADASTRAR NOVO PRODUTO ====");
+		int tipo = lerInteiro("* Tipo do produto (1: não perecível; 2: perecível): ");
+		String descricao = lerString("* Descrição/nome do produto: ");
+		double precoCusto = lerDouble("* Insira o preço de custo: ");
+		double margemLucro = lerDouble("* Insira a margem de lucro: ");
+
+		switch(tipo) {
+			case 1:
+				produtosCadastrados[quantosProdutos] = new ProdutoNaoPerecivel(descricao, precoCusto, margemLucro);
+				break;
+			case 2:
+				LocalDate dataValidade = lerData("* Insira a data de validade (dd/mm/aaaa): ");
+
+				produtosCadastrados[quantosProdutos] = new ProdutoPerecivel(descricao, precoCusto, margemLucro, dataValidade);
+				break;
+		}
+
+		quantosProdutos++;
+	}
+
+	private static String lerString(String mensagem) {
+		System.out.print(mensagem);
+		return teclado.nextLine();
+	}
+
+	private static int lerInteiro(String mensagem) {
+		System.out.print(mensagem);
+		return Integer.parseInt(teclado.nextLine());
+	}
+
+	private static double lerDouble(String mensagem) {
+		System.out.print(mensagem);
+		return Double.parseDouble(teclado.nextLine());
+	}
+
+	private static LocalDate lerData(String mensagem) {
+		System.out.print(mensagem);
+		return LocalDate.parse(teclado.nextLine(), DateTimeFormatter.ofPattern("dd/MM/yyyy"));
 	}
 
 	/**
@@ -155,14 +189,22 @@ public class Comercio {
 	 * @param nomeArquivo Nome do arquivo a ser gravado.
 	 */
 	public static void salvarProdutos(String nomeArquivo) {
-		/*
-		 * Você deve implementar aqui a lógica que abrirá um arquivo para escrita com o
-		 * nome informado no
-		 * parâmetro, percorrerá um por um todos os produtos existentes no vetor de
-		 * produtosCadastrados, gerando
-		 * uma linha de texto com os dados de cada objeto Produto, escrevendo-a no
-		 * arquivo.
-		 */
+		try {
+			File arquivo = new File(nomeArquivo);
+			FileWriter escritor = new FileWriter(arquivo);
+
+			StringBuilder conteudoArquivo = new StringBuilder(quantosProdutos + "\n");
+
+			for(int i = 0; i < quantosProdutos; i++) {
+				conteudoArquivo.append(produtosCadastrados[i].gerarDadosTexto() + "\n");
+			}
+
+			escritor.write(conteudoArquivo.toString());
+
+			escritor.close();
+		} catch (IOException e) {
+			System.out.println("Arquivo inexistente!");
+		}
 	}
 
 	public static void main(String[] args) throws Exception {

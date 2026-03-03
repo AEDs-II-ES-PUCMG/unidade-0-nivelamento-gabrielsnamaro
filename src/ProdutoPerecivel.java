@@ -38,18 +38,19 @@ public class ProdutoPerecivel extends Produto {
      */
     @Override
     public String gerarDadosTexto() {
-        String dataValidadeFormatada = 
-            DateTimeFormatter.ofPattern("dd/MM/yyyy").format(this.dataDeValidade);
+        String dataValidadeFormatada = DateTimeFormatter.ofPattern("dd/MM/yyyy").format(this.dataDeValidade);
+        String precoFormatado = String.format("%.2f", this.precoCusto).replace(",", ".");
+        String margemLucroFormatada = String.format("%.2f", this.margemLucro).replace(",", ".");
 
-        return String.format("2;%s;%.2f;%.2f;%s", this.descricao, this.precoCusto, this.margemLucro, dataValidadeFormatada);
+        return String.format("2;%s;%s;%s;%s", this.descricao, precoFormatado, margemLucroFormatada, dataValidadeFormatada);
     }
 
     @Override
     public String toString() {
-        DateTimeFormatter formatoData = DateTimeFormatter.ofPattern("dd/mm/yyyy");
+        DateTimeFormatter formatoData = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
         StringBuilder builder = new StringBuilder(super.toString());
-        builder.append("\nVálido até " + formatoData);
+        builder.append("\nVálido até " + formatoData.format(dataDeValidade));
 
         return builder.toString();
     }
