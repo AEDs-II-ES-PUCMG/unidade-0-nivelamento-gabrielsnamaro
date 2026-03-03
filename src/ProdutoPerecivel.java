@@ -32,6 +32,18 @@ public class ProdutoPerecivel extends Produto {
             valor;
     }
 
+    /**
+     * Gera uma linha de texto a partir dos dados do produto. Preço e margem de lucro vão formatados com 2 casas decimais.
+     * @return Uma string no formato "2;descrição;preçoDeCusto;margemDeLucro;dataDeValidade"
+     */
+    @Override
+    public String gerarDadosTexto() {
+        String dataValidadeFormatada = 
+            DateTimeFormatter.ofPattern("dd/MM/yyyy").format(this.dataDeValidade);
+
+        return String.format("2;%s;%.2f;%.2f;%s", this.descricao, this.precoCusto, this.margemLucro, dataValidadeFormatada);
+    }
+
     @Override
     public String toString() {
         DateTimeFormatter formatoData = DateTimeFormatter.ofPattern("dd/mm/yyyy");
