@@ -1,4 +1,6 @@
 import java.text.NumberFormat;
+import java.time.LocalDate;
+import java.util.Arrays;
 
 public abstract class Produto {
 	
@@ -80,9 +82,47 @@ public abstract class Produto {
 	 * @return Um produto com os dados recebidos
 	 */
 	public static Produto criarDoTexto(String linha){
-		Produto novoProduto = null;
+		Produto novoProduto;
+		String[] dadosProduto = linha.split(";");
+		int tipoProduto = Integer.parseInt(dadosProduto[0]);
+
+		switch(tipoProduto) {
+			case 1:
+				novoProduto = criarNaoPerecivel(dadosProduto);
+				break;
+			case 2:
+				novoProduto = criarPerecivel(dadosProduto);
+				break;
+			default:
+				throw new IllegalArgumentException("Tipo do produto é inválido. Deve ser exclusivamente 1 (não perecível) ou 2 (perecível).");
+		}
 
 		return novoProduto;
+	}
+
+	private static ProdutoNaoPerecivel criarNaoPerecivel(String[] dados) {
+		return new ProdutoNaoPerecivel(
+			dados[1],
+			Double.parseDouble(dados[2]),
+			Double.parseDouble(dados[3])
+		);
+	}
+
+	private static ProdutoPerecivel criarPerecivel(String[] dados) {
+		String[] dataDividida = dados[4].split("/");
+
+		LocalDate validade = LocalDate.of(
+			Integer.parseInt(dataDividida[2]), 
+			Integer.parseInt(dataDividida[1]), 
+			Integer.parseInt(dataDividida[0])
+		);
+
+		return new ProdutoPerecivel(
+			dados[1],
+			Double.parseDouble(dados[2]),
+			Double.parseDouble(dados[3]),
+			validade
+		);
 	}
 
 	/**
